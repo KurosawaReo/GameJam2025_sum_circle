@@ -5,24 +5,24 @@
 /// </summary>
 namespace Global
 {
-
+    /// <summary>
+    /// フェーズ.
+    /// </summary>
+    public enum Phase
+    {
+        Day,   //昼.
+        Night, //夜.
+    }
 
     /// <summary>
     /// Global定数.
     /// </summary>
     public static class GL_Const
     {
-#if false
-        //例:
-        public const int COUNT = 3;
-        
-        public static string[] TEXT =
-        {
-            "AAA",
-            "BBB",
-            "CCC",
-        };
-#endif
+        public const float PLAYER_SIZE = 1;
+        public const float GRID_SIZE   = 1;
+
+        public const int   GAME_DAY_COUNT = 7; //ゲームで行う日数.
     }
 
     /// <summary>
