@@ -5,6 +5,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using MyLib.Object;
+using MyLib.Calc;
+using MyLib.InputST;
+
 /// <summary>
 /// セリフデータ.
 /// </summary>
@@ -14,7 +18,7 @@ public class SerifData
     public string msg;    //メッセージ内容.
 }
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MyObject
 {
     [Header("- script-")]
     [SerializeField] GameManager scptGameMng;
@@ -24,6 +28,10 @@ public class PlayerManager : MonoBehaviour
 
     List<SerifData> serif; //セリフデータ配列.
 
+    void Start()
+    {
+        InitMyObj(); //MyObject初期化.
+    }
     void Update()
     {
         Move(); //プレイヤー移動.
@@ -34,26 +42,12 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        //左.
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position += Vector3.left * moveSpeed * Time.deltaTime;
-        }
-        //右.
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.position += Vector3.right * moveSpeed * Time.deltaTime;
-        }
-        //上.
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
-            transform.position += Vector3.up * moveSpeed * Time.deltaTime;
-        }
-        //下.
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {
-            transform.position += Vector3.down * moveSpeed * Time.deltaTime;
-        }
+        //入力を取得.
+        Vector2 input = IN_Func.GetMove4dir();
+        //入力した方向の角度を求める.
+        Vector2 vec   = CL_Func.CalcInputVec(input);
+        //移動処理.
+        MoveMyObj(vec, moveSpeed);
     }
 
     /// <summary>

@@ -259,7 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c419d1966b332f44380ff7e6a68689f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scptPlyMng: {fileID: 0}
+  scptPlyMng: {fileID: 1099825401}
   dayCnt: 0
   treasureCnt: 0
 --- !u!1 &1099825398
@@ -359,8 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6f727451c1cd6849a28d092ab2f3c21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scptGameMng: {fileID: 0}
-  moveSpeed: 0
+  scptGameMng: {fileID: 797396799}
+  moveSpeed: 2.17
 --- !u!1 &1806842553
 GameObject:
   m_ObjectHideFlags: 0
