@@ -1,19 +1,19 @@
-
+ï»¿
 /// <summary>
-/// ƒOƒ[ƒoƒ‹‚Ìƒeƒ“ƒvƒŒ(‹ó)
-/// ”Ä—p’è”‚â”Ä—pŠÖ”‚È‚Ç‚ğ‚Ü‚Æ‚ß‚é—p.
+/// ã‚°ãƒ­ãƒ¼ãƒãƒ«ã®ãƒ†ãƒ³ãƒ—ãƒ¬(ç©º)
+/// æ±ç”¨å®šæ•°ã‚„æ±ç”¨é–¢æ•°ãªã©ã‚’ã¾ã¨ã‚ã‚‹ç”¨.
 /// </summary>
 namespace Global
 {
 
 
     /// <summary>
-    /// Global’è”.
+    /// Globalå®šæ•°.
     /// </summary>
     public static class GL_Const
     {
 #if false
-        //—á:
+        //ä¾‹:
         public const int COUNT = 3;
         
         public static string[] TEXT =
@@ -26,7 +26,7 @@ namespace Global
     }
 
     /// <summary>
-    /// GlobalŠÖ”.
+    /// Globalé–¢æ•°.
     /// </summary>
     public static class GL_Func
     {
