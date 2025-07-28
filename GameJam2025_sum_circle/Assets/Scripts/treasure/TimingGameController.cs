@@ -9,6 +9,7 @@ public class TimingGameController : MonoBehaviour
     public float speed = 1.0f;
     public float speedIncrease = 0.1f;
 
+
     [Header("ゾーン表示")]
     public Image successZoneImage;  // 成功ゾーン（緑の帯）
     public Image justZoneImage;     // ジャストゾーン（別画像）
@@ -46,6 +47,7 @@ public class TimingGameController : MonoBehaviour
 
     public int maxFailCount = 3; // 難易度に応じて設定
     public int successToReward = 3; // 何回成功したら報酬？
+    private float initialSpeed;  // ← スピードリセット用
 
 
 
@@ -58,10 +60,12 @@ public class TimingGameController : MonoBehaviour
             Debug.Log($"宝箱レアリティ設定：{currentChestRarity}");
         }
 
+        initialSpeed = speed;  // 初期値保存
         timingSlider.direction = Slider.Direction.BottomToTop;
         SetupHeartsForDifficulty(GetFailCountByRarity(currentChestRarity)); // 難易度調整
         GenerateSuccessZone();
     }
+
 
     void Update()
     {
@@ -210,7 +214,6 @@ public class TimingGameController : MonoBehaviour
 
     private void GiveReward()
     {
-        // レアリティに対応した報酬リスト取得
         var rarityReward = rarityRewards.Find(r => r.rarity == currentChestRarity);
         if (rarityReward == null || rarityReward.rewardItems.Count == 0)
         {
@@ -221,12 +224,16 @@ public class TimingGameController : MonoBehaviour
         int index = Random.Range(0, rarityReward.rewardItems.Count);
         Item reward = rarityReward.rewardItems[index];
 
-        // InventoryManagerなどにアイテムを追加（あなたのゲームの実装に合わせてください）
         InventoryManager.Instance.AddItem(reward, 1);
 
         //if (timingGamePanel != null)
         //    timingGamePanel.SetActive(false);
 
         Debug.Log($"報酬アイテム「{reward.itemName}」を獲得！（レアリティ：{currentChestRarity}）");
+
+        // ←ここでスピードリセット
+        speed = initialSpeed;
     }
+
 }
+
