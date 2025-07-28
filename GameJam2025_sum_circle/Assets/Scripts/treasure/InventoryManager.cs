@@ -38,5 +38,11 @@ public class InventoryManager : MonoBehaviour
         return itemCounts.TryGetValue(itemId, out int count) ? count : 0;
     }
 
+    public Dictionary<string, int> GetAllItems()
+    {
+        return new Dictionary<string, int>(itemCounts);
+    }
+
+
     // 他、アイテム削除や所持チェックも追加可能
 }

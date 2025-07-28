@@ -8,6 +8,8 @@ public class Item : ScriptableObject
     public string itemName;
     public Sprite icon;
     public string description;
+    public int price;       // 追加：アイテムの価格（例：売値や換算値）
+
     public Rarity rarity;
 
     public enum Rarity

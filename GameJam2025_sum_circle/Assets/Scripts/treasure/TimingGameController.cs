@@ -224,8 +224,8 @@ public class TimingGameController : MonoBehaviour
         // InventoryManagerなどにアイテムを追加（あなたのゲームの実装に合わせてください）
         InventoryManager.Instance.AddItem(reward, 1);
 
-        if (timingGamePanel != null)
-            timingGamePanel.SetActive(false);
+        //if (timingGamePanel != null)
+        //    timingGamePanel.SetActive(false);
 
         Debug.Log($"報酬アイテム「{reward.itemName}」を獲得！（レアリティ：{currentChestRarity}）");
     }
