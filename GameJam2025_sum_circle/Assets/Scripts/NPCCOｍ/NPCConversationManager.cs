@@ -40,12 +40,12 @@ public class NPCConversationManager : MonoBehaviour
 
         if (talkedNPCs.Count >= 3)
         {
-            Debug.Log("全てのNPCと話しました → 夜に切り替え（他チームに通知）");
+            Debug.Log("全てのNPCと話しました → 夜に切り替え");
         }
     }
 
     public void CloseConversation()
     {
-        conversationPanel.SetActive(false);
+       // conversationPanel.SetActive(false);
     }
 }
