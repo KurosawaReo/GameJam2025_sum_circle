@@ -6,11 +6,11 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Police : MonoBehaviour
 {
-    public float speed = 2f;
-    public float detectionDistance = 1f;
+    public float speed = 2f;                //移動スピード
+    public float detectionDistance = 1f;　　//壁があるかの判定用
     public LayerMask wallLayer;
-    public float angle = 45f;
-
+    public float angle = 45f;               //視野角
+    public float FieldOfView;　　　　　　　 //視認距離設定できるが当たり判定で動かしているのでcirclecollider2Dの大きさを変える必要がある
     void Update()
     {
         Direction();
@@ -63,5 +63,19 @@ public class Police : MonoBehaviour
                 Debug.Log("死角にいます ");
             }
         }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // デバッグ用の扇形表示
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, FieldOfView);
+
+        Vector3 leftBoundary = Quaternion.Euler(0, 0, -angle / 2f) * transform.up;
+        Vector3 rightBoundary = Quaternion.Euler(0, 0, angle / 2f) * transform.up;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, leftBoundary * FieldOfView);
+        Gizmos.DrawRay(transform.position, rightBoundary * FieldOfView);
     }
 }
