@@ -37,12 +37,14 @@ public class PlayerManager : MyObject
     [Header("- value -")]
     [SerializeField]              float moveSpeed;    //移動速度.
     [SerializeField, Range(0, 1)] float reduceInputY; //Y入力をどれだけ減らすか.
+    [Space]
+    [SerializeField] Vector2[] roomPos = new Vector2[(int)RoomNum.RoomCount];
 
     Animator anmSerif1;
     Animator anmSerif2;
     bool     isShowSerif = false; //表示しているか.
 
-    RoomType nowRoom; //今いる部屋のタイプ.
+    RoomNum  nowRoom; //今いる部屋番号.
 
     List<SerifData> serif = new List<SerifData>(); //セリフデータ配列.
 
@@ -64,7 +66,7 @@ public class PlayerManager : MyObject
         SaveSerif("B: ああああああああ");
         SaveSerif("C: いいいいいいいいい");
         SaveSerif("D: うああああああああああああああああ");
-        nowRoom = RoomType.FullScreen;
+        nowRoom = RoomNum.C_01; //最初は廊下01.
     }
     void Update()
     {
@@ -138,18 +140,49 @@ public class PlayerManager : MyObject
     /// </summary>
     private void CameraMove()
     {
-        //カメラ動く.
-        if (nowRoom == RoomType.MoveScreen)
+        //部屋別に制御.
+        switch (nowRoom)
         {
-            //カメラ座標.
-            Vector3 cameraPos = Camera.main.transform.position;
-            //プレイヤーの座標にカメラを追尾.
-            Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraPos.z);
-        }
-        //カメラ固定.
-        else
-        {
-            //TODO: 部屋の座標を求める.
+        //▼範囲内を動く.
+            case RoomNum.C_01:
+                {
+                    //カメラ座標.
+                    Vector3 cameraPos = Camera.main.transform.position;
+                    //プレイヤーの座標にカメラを追尾.
+                    Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraPos.z);
+                }
+                //TODO: 範囲内を動く.
+                break;
+            case RoomNum.C_02:
+                //TODO: 範囲内を動く.
+                break;
+            case RoomNum.R_Treasure:
+                //TODO: 範囲内を動く.
+                break;
+
+        //▼1画面固定.
+            case RoomNum.R_01:
+                break;
+            case RoomNum.R_02:
+                break;
+            case RoomNum.R_03:
+                break;
+            case RoomNum.R_04:
+                break;
+            case RoomNum.R_05:
+                break;
+            case RoomNum.R_06:
+                break;
+            case RoomNum.R_07:
+                break;
+            case RoomNum.R_08:
+                break;
+            case RoomNum.R_09:
+                break;
+            case RoomNum.R_10:
+                break;
+
+            default: Debug.LogError("[Error] 不正な値です"); break;
         }
     }
 
@@ -217,6 +250,103 @@ public class PlayerManager : MyObject
                 anmSerif2.SetBool("Show", false); //隠す.
             }
             isShowSerif = !isShowSerif; //切り替え.
+        }
+    }
+
+    /// <summary>
+    /// 部屋移動.
+    /// </summary>
+
+    private void MoveRoom()
+    {
+        //TODO: 音やアニメーション.
+    }
+
+    /// <summary>
+    /// 何かに当たり始めた瞬間の処理.
+    /// </summary>
+    private void OnCollisionEnter2D(Collision2D hit)
+    {
+        //tag別で処理.
+        switch (hit.gameObject.tag) 
+        {
+            case "Goto_C_01":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.C_01;
+                MoveRoom();
+                break;
+
+            case "Goto_C_02": 
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
+
+            case "Goto_R_01":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_01;
+                MoveRoom();
+                break;
+
+            case "Goto_R_02":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_02;
+                MoveRoom();
+                break;
+
+            case "Goto_R_03":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_03;
+                MoveRoom();
+                break;
+
+            case "Goto_R_04":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_04;
+                MoveRoom();
+                break;
+
+            case "Goto_R_05":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_05;
+                MoveRoom();
+                break;
+
+            case "Goto_R_06":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_06;
+                MoveRoom();
+                break;
+
+            case "Goto_R_07":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_07;
+                MoveRoom();
+                break;
+
+            case "Goto_R_08":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_08;
+                MoveRoom();
+                break;
+
+            case "Goto_R_09":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_09;
+                MoveRoom();
+                break;
+
+            case "Goto_R_10":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_10;
+                MoveRoom();
+                break;
+
+            case "Goto_R_Treasure":
+                //TODO: 移動先はどこか？ 
+                nowRoom = RoomNum.R_Treasure;
+                MoveRoom();
+                break;
         }
     }
 }

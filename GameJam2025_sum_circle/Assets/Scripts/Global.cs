@@ -6,12 +6,26 @@
 namespace Global
 {
     /// <summary>
-    /// 部屋のタイプ.
+    /// 部屋番号.
     /// </summary>
-    public enum RoomType
+    public enum RoomNum
     {
-        FullScreen, //1画面固定.
-        MoveScreen  //カメラが動く(広い部屋)
+        //C = 廊下, R = 部屋.
+        C_01,
+        C_02,
+        R_01,
+        R_02,
+        R_03,
+        R_04,
+        R_05,
+        R_06,
+        R_07,
+        R_08,
+        R_09,
+        R_10,
+        R_Treasure, //最奥の宝箱部屋.
+
+        RoomCount, //部屋総数.
     }
     /// <summary>
     /// フェーズ.
