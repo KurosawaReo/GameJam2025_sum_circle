@@ -16,7 +16,7 @@ using Global;
 /// </summary>
 public class SerifData
 {
-    public string msg = ""; //メッセージ内容.
+    public string msg; //メッセージ内容.
 }
 
 public class PlayerManager : MyObject
@@ -24,8 +24,8 @@ public class PlayerManager : MyObject
     [Header("- script-")]
     [SerializeField] GameManager scptGameMng;
 
-    [Header("- image -")]
-    [SerializeField] Sprite[] imgPlayer = new Sprite[3]; //手前, 横, 後ろ.
+    [Header("- object -")]
+    [SerializeField] GameObject objPlyImg; //プレイヤー画像オブジェクト.
 
     [Header("- panel -")]
     [SerializeField] GameObject pnlSerif1; //セリフ記録.
@@ -83,6 +83,16 @@ public class PlayerManager : MyObject
     }
 
     /// <summary>
+    /// アニメーションのリセット処理.
+    /// </summary>
+    public void ResetAnim()
+    {
+        ResetAnimMyObj("Front");
+        ResetAnimMyObj("Side");
+        ResetAnimMyObj("Back");
+    }
+
+    /// <summary>
     /// プレイヤー移動.
     /// </summary>
     private void PlayerMove()
@@ -97,17 +107,30 @@ public class PlayerManager : MyObject
             //横に移動してるなら.
             if (Mathf.Abs(vec.x) >= Mathf.Abs(vec.y))
             {
-                Sprite = imgPlayer[1]; //横向き.
-                IsFlip = (vec.x < 0);  //画像反転.
+                ResetAnim();
+                SetAnimMyObj("Side");
+                objPlyImg.GetComponent<SpriteRenderer>().flipX = (vec.x < 0); //画像反転.
             }
             //縦に移動してるなら.
             else
             {
-                Sprite = (vec.y >= 0) ? imgPlayer[2] : imgPlayer[0]; //前か後ろか.
+                //前か後ろか.
+                if (vec.y >= 0)
+                {
+                    ResetAnim();
+                    SetAnimMyObj("Back");
+                }
+                else
+                {
+                    ResetAnim();
+                    SetAnimMyObj("Front");
+                }
             }
-        }
 
-        MoveMyObj(vec, moveSpeed); //移動処理.
+            MoveMyObj(vec, moveSpeed); //移動処理.
+        }
+        //歩いているか.
+        SetAnimMyObj("isWalk", vec != Vector2.zero);
     }
 
     /// <summary>

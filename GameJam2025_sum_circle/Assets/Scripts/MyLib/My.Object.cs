@@ -221,5 +221,12 @@ namespace MyLib.Object
         {
             cmp.animr.SetFloat(name, value);
         }
+        /// <summary>
+        /// Animatorのパラメーターをリセット(Trigger)
+        /// </summary>
+        public void ResetAnimMyObj(string name)
+        {
+            cmp.animr.ResetTrigger(name);
+        }
     }
 }

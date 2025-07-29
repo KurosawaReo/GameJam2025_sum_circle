@@ -13,7 +13,6 @@ namespace Global
         FullScreen, //1画面固定.
         MoveScreen  //カメラが動く(広い部屋)
     }
-
     /// <summary>
     /// フェーズ.
     /// </summary>
@@ -31,8 +30,8 @@ namespace Global
         public const float PLAYER_SIZE = 1;
         public const float GRID_SIZE   = 1;
 
-        public const int   GAME_DAY_COUNT = 7;  //ゲームで行う日数.
-        public const int   SERIF_SAVE_MAX = 21; //セリフを保存する最大数.
+        public const int   GAME_DAY_COUNT = 7;   //ゲームで行う日数.
+        public const int   SERIF_SAVE_MAX = 21;  //セリフを保存する最大数.
     }
 
     /// <summary>
