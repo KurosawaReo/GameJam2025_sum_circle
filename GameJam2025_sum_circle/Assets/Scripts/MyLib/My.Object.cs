@@ -30,7 +30,7 @@ namespace MyLib.Object
     public class MyObject : MonoBehaviour
     {
     //▼private変数.
-        private ObjComponents cmp;
+        private ObjComponents cmp = new ObjComponents();
 
         private Vector2 facing;   //向いてる方向.
         private bool    isActive; //有効かどうか.
@@ -119,8 +119,8 @@ namespace MyLib.Object
         {
             //コンポーネント取得.
             cmp.sr    = GetComponent<SpriteRenderer>();
-            cmp.rb2d  = GetComponent<Rigidbody2D>();    
-            cmp.animr = GetComponent<Animator>();    
+            cmp.rb2d  = GetComponent<Rigidbody2D>();
+            cmp.animr = GetComponent<Animator>();
             //サイズ取得.
             size = new Vector2(cmp.sr.bounds.size.x * size.x, cmp.sr.bounds.size.x * size.y);
             //自動初期化モードなら.

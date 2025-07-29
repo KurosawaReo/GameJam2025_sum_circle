@@ -8,14 +8,15 @@ using UnityEngine;
 using MyLib.Object;
 using MyLib.Calc;
 using MyLib.InputST;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// セリフデータ.
 /// </summary>
 public class SerifData
 {
-    public int    dayCnt; //日数.
-    public string msg;    //メッセージ内容.
+    public string msg = ""; //メッセージ内容.
 }
 
 public class PlayerManager : MyObject
@@ -23,31 +24,65 @@ public class PlayerManager : MyObject
     [Header("- script-")]
     [SerializeField] GameManager scptGameMng;
 
-    [Header("- value -")]
-    [SerializeField] float moveSpeed; //移動速度.
+    [Header("- text -")]
+    [SerializeField] Text txtSerif;
 
-    List<SerifData> serif; //セリフデータ配列.
+    [Header("- panel -")]
+    [SerializeField] GameObject pnlSerif; //セリフメモ.
+
+    [Header("- value -")]
+    [SerializeField]              float moveSpeed;    //移動速度.
+    [SerializeField, Range(0, 1)] float reduceInputY; //Y入力をどれだけ減らすか.
+
+    Animator anmSerif;
+    bool     isShowSerif = false; //表示しているか.
+
+    List<SerifData> serif = new List<SerifData>(); //セリフデータ配列.
 
     void Start()
     {
-        InitMyObj(); //MyObject初期化.
+        InitMyObj();     //MyObject初期化.
+        ClearAllSerif(); //セリフリセット.
+
+        //component取得.
+        anmSerif = pnlSerif.GetComponent<Animator>();
+
+        SaveSerif("東に行くと何かがあるよ");
+        SaveSerif("そこには何もないよ");
+        SaveSerif("嘘だったよ");
+        SaveSerif("はああああああああ");
+        SaveSerif("ああああああああ");
+        SaveSerif("いいいいいいいいい");
+        SaveSerif("うああああああああ");
     }
     void Update()
     {
-        Move(); //プレイヤー移動.
+        PlayerMove(); //プレイヤー移動.
+        CameraMove(); //カメラ移動.
+        ShowSerif();  //セリフメモを表示.
     }
 
     /// <summary>
     /// プレイヤー移動.
     /// </summary>
-    private void Move()
+    private void PlayerMove()
     {
-        //入力を取得.
-        Vector2 input = IN_Func.GetMove4dir();
-        //入力した方向の角度を求める.
-        Vector2 vec   = CL_Func.CalcInputVec(input);
-        //移動処理.
-        MoveMyObj(vec, moveSpeed);
+        Vector2 input = IN_Func.GetMove4dir();       //入力を取得.
+        Vector2 vec   = CL_Func.CalcInputVec(input); //入力した方向の角度を求める.
+        vec.y *= reduceInputY;                       //上下の入力は少し抑える.
+
+        MoveMyObj(vec, moveSpeed); //移動処理.
+    }
+
+    /// <summary>
+    /// カメラ移動.
+    /// </summary>
+    private void CameraMove()
+    {
+        //カメラ座標.
+        Vector3 cameraPos = Camera.main.transform.position;
+        //プレイヤーの座標にカメラを追尾.
+        Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraPos.z);
     }
 
     /// <summary>
@@ -61,31 +96,57 @@ public class PlayerManager : MyObject
     }
 
     /// <summary>
-    /// セリフを履歴として保存する.
+    /// セリフをメモとして保存する.
     /// </summary>
     /// <param name="message">メッセージ内容</param>
     public void SaveSerif(string message)
     {
         SerifData tmp = new SerifData(); //データ作成.
-        tmp.msg    = message;            //メッセージ保存.
-        tmp.dayCnt = scptGameMng.DayCnt; //GameManagerから日数取得.
+        tmp.msg = message;               //メッセージ保存.
+        serif.Add(tmp);                  //メモに追加.
 
-        serif.Add(tmp); //履歴に追加.
+        UpdateSerif(); //セリフ更新.
     }
 
     /// <summary>
-    /// セリフ履歴を表示.
-    /// </summary>
-    public void ShowSerif()
-    {
-        //TODO: どう表示するか.
-    }
-
-    /// <summary>
-    /// 全てのセリフ履歴を削除.
+    /// 全てのセリフメモを削除.
     /// </summary>
     public void ClearAllSerif()
     {
-        serif.Clear();
+        serif.Clear(); //全削除.
+        UpdateSerif(); //セリフ更新.
+    }
+
+    private void UpdateSerif()
+    {
+        txtSerif.text = ""; //一旦空にする.
+
+        //セリフ全取得.
+        foreach (var i in serif)
+        {
+            txtSerif.text += i.msg; //メッセージを取り出す.
+            txtSerif.text += "\n";  //改行.
+        }
+    }
+
+    /// <summary>
+    /// セリフメモを表示.
+    /// </summary>
+    private void ShowSerif()
+    {
+        //ボタンを押したら.
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //表示済なら.
+            if (isShowSerif)
+            {
+                anmSerif.SetBool("Show", false); //隠す.
+            }
+            else
+            {
+                anmSerif.SetBool("Show", true);  //出す.
+            }
+            isShowSerif = !isShowSerif; //切り替え.
+        }
     }
 }

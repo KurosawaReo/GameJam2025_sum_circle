@@ -11,8 +11,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerManager scptPlyMng;
 
     [Header("- value -")]
-    [SerializeField] int dayCnt;      //日数.
-    [SerializeField] int treasureCnt; //宝の数.
+    [SerializeField] int   dayCnt;      //日数.
+    [SerializeField] int   treasureCnt; //宝の数.
+    [SerializeField] Phase phase;       //フェーズ.
+
     //get, set.
     public int DayCnt { get; }
 
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
     {
         dayCnt = 1;
         treasureCnt = 0;
+        phase = Phase.Day; //昼から開始.
 
         //他class処理.
         scptPlyMng.ClearAllSerif(); //セリフ履歴削除.
