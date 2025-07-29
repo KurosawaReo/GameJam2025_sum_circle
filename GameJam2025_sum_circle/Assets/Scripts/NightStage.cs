@@ -32,22 +32,12 @@ public class NightStage : MonoBehaviour
         
     }
 
-    public void MovinTheRoom()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            if()
-            {
-
-            }
-        }
-    }
-    
+    /*
     void DisplayWall()
     {
         switch (roomNo)
         {
-            case ROOMS.ROOM1:  // 前
+            case ROOMS.ROOM1:  // 右上
                 Rooms.transform.localPosition = new Vector3(4200f, 0f, 0f);
                 break;
 
@@ -55,24 +45,24 @@ public class NightStage : MonoBehaviour
                 Rooms.transform.localPosition = new Vector3(8400f, 0f, 0f);
                 break;
 
-            case ROOMS.ROOM3:  // 後
+            case ROOMS.ROOM3:  // 右下
                 Rooms.transform.localPosition = new Vector3(12800f, 0f, 0f);
                 break;
 
-            case ROOMS.ROOM4:  // 左
+            case ROOMS.ROOM4:  // 左下
                 Rooms.transform.localPosition = new Vector3(-4200f, 0f, 0f);
                 break;
-            case ROOMS.ROOM5:  // 前
+            case ROOMS.ROOM5:  // 左上
                 Rooms.transform.localPosition = new Vector3(-8400f, 0f, 0f);
                 break;
 
-            case ROOMS.ROOM6:  // 右
+            case ROOMS.ROOM6:  // 上
                 Rooms.transform.localPosition = new Vector3(-1500f, 0f, 0f);
                 break;
 
-            case ROOMS.CORRIDOR:  // 後
+            case ROOMS.CORRIDOR:  // 廊下
                 Rooms.transform.localPosition = new Vector3(0f, 0f, 0f);
                 break;
         }
-    }
+    }*/
 }

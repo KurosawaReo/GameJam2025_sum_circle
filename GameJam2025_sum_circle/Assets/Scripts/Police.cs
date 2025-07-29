@@ -56,20 +56,7 @@ public class Police : MonoBehaviour
 
             if (target_angle < angle)
             {
-                Debug.Log("pureiya- ");
-                Vector2 rayOrigin = (Vector2)transform.position + posDelta.normalized * 0.5f;
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, posDelta.normalized, detectionDistance, wallLayer);
-                if (hit.collider != null && hit.collider == c)
-                {
-                    Debug.Log("視野内にプレイヤーを発見！");
-                }
-                else
-                {
-                    Debug.Log("ina-i ");
-                }
-                Debug.Log("c: " + c);
-                Debug.Log("hit.collider: " + (hit.collider != null ? hit.collider.name : "null"));
-
+                Debug.Log("視野内にプレイヤーを発見！"); 
             }
             else
             {
