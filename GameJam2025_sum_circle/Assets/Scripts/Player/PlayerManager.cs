@@ -28,13 +28,15 @@ public class PlayerManager : MyObject
     [SerializeField] Text txtSerif;
 
     [Header("- panel -")]
-    [SerializeField] GameObject pnlSerif; //セリフメモ.
+    [SerializeField] GameObject pnlSerif1; //セリフ記録.
+    [SerializeField] GameObject pnlSerif2; //セリフ記録.
 
     [Header("- value -")]
     [SerializeField]              float moveSpeed;    //移動速度.
     [SerializeField, Range(0, 1)] float reduceInputY; //Y入力をどれだけ減らすか.
 
-    Animator anmSerif;
+    Animator anmSerif1;
+    Animator anmSerif2;
     bool     isShowSerif = false; //表示しているか.
 
     List<SerifData> serif = new List<SerifData>(); //セリフデータ配列.
@@ -45,7 +47,8 @@ public class PlayerManager : MyObject
         ClearAllSerif(); //セリフリセット.
 
         //component取得.
-        anmSerif = pnlSerif.GetComponent<Animator>();
+        anmSerif1 = pnlSerif1.GetComponent<Animator>();
+        anmSerif2 = pnlSerif2.GetComponent<Animator>();
 
         SaveSerif("東に行くと何かがあるよ");
         SaveSerif("そこには何もないよ");
@@ -109,7 +112,7 @@ public class PlayerManager : MyObject
     }
 
     /// <summary>
-    /// 全てのセリフメモを削除.
+    /// 全てのセリフ記録を削除.
     /// </summary>
     public void ClearAllSerif()
     {
@@ -140,11 +143,13 @@ public class PlayerManager : MyObject
             //表示済なら.
             if (isShowSerif)
             {
-                anmSerif.SetBool("Show", false); //隠す.
+                anmSerif1.SetBool("Show", false); //隠す.
+                anmSerif2.SetBool("Show", true);  //出す.
             }
             else
             {
-                anmSerif.SetBool("Show", true);  //出す.
+                anmSerif1.SetBool("Show", true);  //出す.
+                anmSerif2.SetBool("Show", false); //隠す.
             }
             isShowSerif = !isShowSerif; //切り替え.
         }
