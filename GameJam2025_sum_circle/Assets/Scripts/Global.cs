@@ -6,6 +6,15 @@
 namespace Global
 {
     /// <summary>
+    /// 部屋のタイプ.
+    /// </summary>
+    public enum RoomType
+    {
+        FullScreen, //1画面固定.
+        MoveScreen  //カメラが動く(広い部屋)
+    }
+
+    /// <summary>
     /// フェーズ.
     /// </summary>
     public enum Phase

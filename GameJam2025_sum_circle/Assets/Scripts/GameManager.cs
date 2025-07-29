@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         phase = Phase.Day; //昼から開始.
 
         //他class処理.
-        scptPlyMng.ClearAllSerif(); //セリフ履歴削除.
+        scptPlyMng.ResetPlayer();
     }
 
     /// <summary>

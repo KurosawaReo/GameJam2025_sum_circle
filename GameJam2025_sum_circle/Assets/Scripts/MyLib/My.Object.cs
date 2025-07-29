@@ -67,6 +67,12 @@ namespace MyLib.Object
             get => transform.position.y;
             protected set => transform.position = new Vector2(PosX, value);
         }
+        public Vector2 Size {
+            get => size;
+        }
+        public Vector2 Facing {
+            get => facing;
+        }
         public Vector2 Vel {
             get => cmp.rb2d.velocity;
             protected set => cmp.rb2d.velocity = value;
@@ -83,19 +89,18 @@ namespace MyLib.Object
             get => cmp.rb2d.gravityScale;
             protected set => cmp.rb2d.gravityScale = value;
         }
-        public Vector2 Size {
-            get => size;
+        public int Hp {
+            get => hp.Now;
+            protected set => hp.Now = value;
         }
-        public Vector2 Facing {
-            get => facing;
+        public Sprite Sprite
+        {
+            get => cmp.sr.sprite;
+            set => cmp.sr.sprite = value;
         }
         public Color Color {
             get => cmp.sr.color;
             protected set => cmp.sr.color = value;
-        }
-        public int Hp {
-            get => hp.Now;
-            protected set => hp.Now = value;
         }
         public bool IsActive {
             get => isActive; 

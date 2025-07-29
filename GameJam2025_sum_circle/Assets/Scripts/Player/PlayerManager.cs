@@ -9,7 +9,7 @@ using MyLib.Object;
 using MyLib.Calc;
 using MyLib.InputST;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
+using Global;
 
 /// <summary>
 /// セリフデータ.
@@ -24,12 +24,15 @@ public class PlayerManager : MyObject
     [Header("- script-")]
     [SerializeField] GameManager scptGameMng;
 
-    [Header("- text -")]
-    [SerializeField] Text txtSerif;
+    [Header("- image -")]
+    [SerializeField] Sprite[] imgPlayer = new Sprite[3]; //手前, 横, 後ろ.
 
     [Header("- panel -")]
     [SerializeField] GameObject pnlSerif1; //セリフ記録.
     [SerializeField] GameObject pnlSerif2; //セリフ記録.
+
+    [Header("- text -")]
+    [SerializeField] Text txtSerif;
 
     [Header("- value -")]
     [SerializeField]              float moveSpeed;    //移動速度.
@@ -38,6 +41,8 @@ public class PlayerManager : MyObject
     Animator anmSerif1;
     Animator anmSerif2;
     bool     isShowSerif = false; //表示しているか.
+
+    RoomType nowRoom; //今いる部屋のタイプ.
 
     List<SerifData> serif = new List<SerifData>(); //セリフデータ配列.
 
@@ -50,19 +55,31 @@ public class PlayerManager : MyObject
         anmSerif1 = pnlSerif1.GetComponent<Animator>();
         anmSerif2 = pnlSerif2.GetComponent<Animator>();
 
-        SaveSerif("東に行くと何かがあるよ");
-        SaveSerif("そこには何もないよ");
-        SaveSerif("嘘だったよ");
-        SaveSerif("はああああああああ");
-        SaveSerif("ああああああああ");
-        SaveSerif("いいいいいいいいい");
-        SaveSerif("うああああああああ");
+        //test.
+        SaveSerif("A: 東に行くと何かがあるよ");
+        SaveSerif("B: そこには何もないよ");
+        SaveSerif("C: 嘘だったよ");
+        SaveSerif("D: ふざけんなよ");
+        SaveSerif("A: はああああああああ");
+        SaveSerif("B: ああああああああ");
+        SaveSerif("C: いいいいいいいいい");
+        SaveSerif("D: うああああああああああああああああ");
+        nowRoom = RoomType.FullScreen;
     }
     void Update()
     {
         PlayerMove(); //プレイヤー移動.
         CameraMove(); //カメラ移動.
         ShowSerif();  //セリフメモを表示.
+    }
+
+    /// <summary>
+    /// リセット処理.
+    /// </summary>
+    public void ResetPlayer()
+    {
+        ResetMyObj();    //MyObjectのリセット.
+        ClearAllSerif(); //セリフ削除.
     }
 
     /// <summary>
@@ -74,6 +91,22 @@ public class PlayerManager : MyObject
         Vector2 vec   = CL_Func.CalcInputVec(input); //入力した方向の角度を求める.
         vec.y *= reduceInputY;                       //上下の入力は少し抑える.
 
+        //少しでも移動していれば.
+        if (vec != Vector2.zero)
+        {
+            //横に移動してるなら.
+            if (Mathf.Abs(vec.x) >= Mathf.Abs(vec.y))
+            {
+                Sprite = imgPlayer[1]; //横向き.
+                IsFlip = (vec.x < 0);  //画像反転.
+            }
+            //縦に移動してるなら.
+            else
+            {
+                Sprite = (vec.y >= 0) ? imgPlayer[2] : imgPlayer[0]; //前か後ろか.
+            }
+        }
+
         MoveMyObj(vec, moveSpeed); //移動処理.
     }
 
@@ -82,10 +115,19 @@ public class PlayerManager : MyObject
     /// </summary>
     private void CameraMove()
     {
-        //カメラ座標.
-        Vector3 cameraPos = Camera.main.transform.position;
-        //プレイヤーの座標にカメラを追尾.
-        Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraPos.z);
+        //カメラ動く.
+        if (nowRoom == RoomType.MoveScreen)
+        {
+            //カメラ座標.
+            Vector3 cameraPos = Camera.main.transform.position;
+            //プレイヤーの座標にカメラを追尾.
+            Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraPos.z);
+        }
+        //カメラ固定.
+        else
+        {
+            //TODO: 部屋の座標を求める.
+        }
     }
 
     /// <summary>
