@@ -9,7 +9,6 @@ public class TimingGameController : MonoBehaviour
     public float speed = 1.0f;
     public float speedIncrease = 0.1f;
 
-
     [Header("ゾーン表示")]
     public Image successZoneImage;  // 成功ゾーン（緑の帯）
     public Image justZoneImage;     // ジャストゾーン（別画像）
@@ -27,6 +26,9 @@ public class TimingGameController : MonoBehaviour
 
     [Header("現在の宝箱レアリティ")]
     public ChestRarity currentChestRarity = ChestRarity.Normal;
+
+    [Header("レジェンダリー専用報酬リスト")]
+    public List<Item> legendaryRewards;  // ここにレジェンダリーだけ入れる（未使用だが保持可能）
 
     private List<Image> hearts = new List<Image>();
     private List<Sprite> originalHeartSprites = new List<Sprite>();
@@ -49,9 +51,12 @@ public class TimingGameController : MonoBehaviour
     public int successToReward = 3; // 何回成功したら報酬？
     private float initialSpeed;  // ← スピードリセット用
 
-
-
     void Start()
+    {
+        GameStart();
+    }
+
+    void GameStart()
     {
         progressManager = FindObjectOfType<GameProgressManager>();
         if (progressManager != null)
@@ -66,7 +71,6 @@ public class TimingGameController : MonoBehaviour
         GenerateSuccessZone();
     }
 
-
     void Update()
     {
         if (isIncreasing)
@@ -76,6 +80,16 @@ public class TimingGameController : MonoBehaviour
 
         if (timingSlider.value >= 1f) isIncreasing = false;
         if (timingSlider.value <= 0f) isIncreasing = true;
+
+        // デバッグ用にFキーで強制ジャスト成功を呼ぶ例
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            ForceJustSuccess();
+        }
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            ForceNormalSuccess();
+        }
     }
 
     public void OnPress()
@@ -126,7 +140,6 @@ public class TimingGameController : MonoBehaviour
 
     private void GenerateSuccessZone()
     {
-        // 難易度やレアリティに応じて成功ゾーンの幅を変えたい場合はここで調整可能
         float fixedZoneWidth = Random.Range(0.3f, 0.5f);
 
         successMin = Random.Range(0f, 1f - fixedZoneWidth);
@@ -154,12 +167,10 @@ public class TimingGameController : MonoBehaviour
         }
     }
 
-    // 指定された数でハートを動的生成・セットアップ
     public void SetupHeartsForDifficulty(int heartCount)
     {
         failCount = 0;
 
-        // 既存のハートを削除
         foreach (Transform child in heartsParent)
         {
             Destroy(child.gameObject);
@@ -167,40 +178,32 @@ public class TimingGameController : MonoBehaviour
         hearts.Clear();
         originalHeartSprites.Clear();
 
-        // 新規生成
         for (int i = 0; i < heartCount; i++)
         {
             GameObject heartObj = Instantiate(heartPrefab, heartsParent);
             Image heartImage = heartObj.GetComponent<Image>();
             hearts.Add(heartImage);
-            originalHeartSprites.Add(heartImage.sprite); // 元画像を保存
+            originalHeartSprites.Add(heartImage.sprite);
         }
     }
 
-    // 失敗数に応じてハートを割れたものに差し替え
     private void UpdateHearts()
     {
         for (int i = 0; i < hearts.Count; i++)
         {
             if (i < failCount)
-            {
                 hearts[i].sprite = brokenHeartSprite;
-            }
             else
-            {
                 hearts[i].sprite = originalHeartSprites[i];
-            }
         }
     }
 
-    // ハートを元画像に戻す
     private void ResetHearts()
     {
         for (int i = 0; i < hearts.Count; i++)
-        {
             hearts[i].sprite = originalHeartSprites[i];
-        }
     }
+
     private int GetFailCountByRarity(ChestRarity rarity)
     {
         switch (rarity)
@@ -214,26 +217,134 @@ public class TimingGameController : MonoBehaviour
 
     private void GiveReward()
     {
-        var rarityReward = rarityRewards.Find(r => r.rarity == currentChestRarity);
-        if (rarityReward == null || rarityReward.rewardItems.Count == 0)
+        // ジャスト成功3回の特別報酬優先
+        if (justSuccessCount >= 3)
         {
-            Debug.LogWarning("報酬リストが空か設定されていません");
-            return;
+            Item specialItem = GetSpecialJustReward();
+            if (specialItem != null)
+            {
+                InventoryManager.Instance.AddItem(specialItem, 1);
+                Debug.Log($"ジャスト3回達成！特別アイテム「{specialItem.itemName}」を獲得！");
+                PlaySpecialRewardEffect();
+            }
+            else
+            {
+                Debug.LogWarning("特別アイテムが取得できませんでした");
+            }
+        }
+        else
+        {
+            // 通常報酬はレジェンダリーを除外してランダム選択
+            var rarityReward = rarityRewards.Find(r => r.rarity == currentChestRarity);
+            if (rarityReward == null || rarityReward.rewardItems.Count == 0)
+            {
+                Debug.LogWarning("報酬リストが空か設定されていません");
+                return;
+            }
+            var nonLegendaryItems = rarityReward.rewardItems.FindAll(item => item.rarity != Item.Rarity.Legendary);
+            if (nonLegendaryItems.Count == 0)
+            {
+                Debug.LogWarning("レジェンダリー以外の報酬アイテムがありません");
+                return;
+            }
+
+            int index = Random.Range(0, nonLegendaryItems.Count);
+            Item reward = nonLegendaryItems[index];
+            InventoryManager.Instance.AddItem(reward, 1);
+            Debug.Log($"報酬アイテム「{reward.itemName}」を獲得！（レアリティ：{currentChestRarity}）");
+
+            // ジャスト2回以上3未満なら30%の確率で追加報酬と演出
+            if (justSuccessCount >= 2 && justSuccessCount < 3)
+            {
+                float bonusChance = 0.3f;
+                if (Random.value < bonusChance)
+                {
+                    int bonusIndex = Random.Range(0, nonLegendaryItems.Count);
+                    Item bonusReward = nonLegendaryItems[bonusIndex];
+                    InventoryManager.Instance.AddItem(bonusReward, 1);
+                    Debug.Log($"ジャストボーナス！追加報酬「{bonusReward.itemName}」を獲得！");
+                    PlayJustBonusEffect();
+                }
+            }
         }
 
-        int index = Random.Range(0, rarityReward.rewardItems.Count);
-        Item reward = rarityReward.rewardItems[index];
-
-        InventoryManager.Instance.AddItem(reward, 1);
-
-        //if (timingGamePanel != null)
-        //    timingGamePanel.SetActive(false);
-
-        Debug.Log($"報酬アイテム「{reward.itemName}」を獲得！（レアリティ：{currentChestRarity}）");
-
-        // ←ここでスピードリセット
         speed = initialSpeed;
+        justSuccessCount = 0;
+        normalSuccessCount = 0;
+    }
+
+    private void PlayJustBonusEffect()
+    {
+        Debug.Log("ジャストボーナス演出再生！");
+        // TODO: パーティクルやSEなどの演出をここに実装
+    }
+
+    private void PlaySpecialRewardEffect()
+    {
+        Debug.Log("特別報酬演出再生！");
+        // TODO: 特別なアニメやSEなどをここに実装
+    }
+
+    private Item GetSpecialJustReward()
+    {
+        var superRareReward = rarityRewards.Find(r => r.rarity == ChestRarity.SuperRare);
+
+        if (superRareReward != null && superRareReward.rewardItems.Count > 0)
+        {
+            var legendaryItems = superRareReward.rewardItems.FindAll(item => item.rarity == Item.Rarity.Legendary);
+            if (legendaryItems.Count > 0)
+            {
+                int index = Random.Range(0, legendaryItems.Count);
+                return legendaryItems[index];
+            }
+            else
+            {
+                Debug.LogWarning("スーパーレア報酬リストにレジェンダリーアイテムがありません");
+                return null;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("スーパーレア報酬リストが設定されていません");
+            return null;
+        }
+    }
+
+    public void ForceJustSuccess()
+    {
+        Debug.Log("【デバッグ】強制ジャスト成功！");
+
+        justSuccessCount++;
+        speed += speedIncrease * 2f;
+
+        failCount = 0;
+        successCount++;
+        ResetHearts();
+        GenerateSuccessZone();
+
+        if (successCount >= successToReward)
+        {
+            GiveReward();
+            successCount = 0;
+        }
+    }
+    public void ForceNormalSuccess()
+    {
+        Debug.Log("【デバッグ】強制通常成功！");
+
+        normalSuccessCount++;
+        speed += speedIncrease;
+
+        failCount = 0;
+        successCount++;
+        ResetHearts();
+        GenerateSuccessZone();
+
+        if (successCount >= successToReward)
+        {
+            GiveReward();
+            successCount = 0;
+        }
     }
 
 }
-
