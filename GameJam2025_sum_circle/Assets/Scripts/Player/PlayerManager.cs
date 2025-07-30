@@ -31,6 +31,9 @@ public class PlayerManager : MyObject
     [SerializeField] GameObject pnlSerif1; //セリフ記録.
     [SerializeField] GameObject pnlSerif2; //セリフ記録.
 
+    [Header("- layer -")]
+    [SerializeField] LayerMask layHitObj; //当たり判定レイヤー.
+
     [Header("- text -")]
     [SerializeField] Text txtSerif;
 
@@ -62,7 +65,7 @@ public class PlayerManager : MyObject
         SetAnimMyObj("Back");   //後ろ向きから開始.
         nowRoom = RoomNum.C_01; //最初は廊下01.
     }
-    void Update()
+    void FixedUpdate()
     {
         PlayerMove(); //プレイヤー移動.
         CameraMove(); //カメラ移動.
@@ -125,6 +128,7 @@ public class PlayerManager : MyObject
 
             MoveMyObj(vec, moveSpeed); //移動処理.
         }
+
         //歩いているか.
         SetAnimMyObj("isWalk", vec != Vector2.zero);
     }
@@ -385,6 +389,6 @@ public class PlayerManager : MyObject
                 break;
         }
 
-        Debug.Log("行き先: " + nowRoom);
+//      Debug.Log("行き先: " + nowRoom);
     }
 }
