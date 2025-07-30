@@ -71,6 +71,8 @@ public class TimingGameController : MonoBehaviour
     public int successToReward = 3; // 何回成功したら報酬？
     private float initialSpeed;  // ← スピードリセット用
 
+    private bool isChestOpenedCompletely = false; // 追加
+
     void Start()
     {
         GameStart();
@@ -93,6 +95,9 @@ public class TimingGameController : MonoBehaviour
 
     void Update()
     {
+        // 宝箱完全オープン時はスライダーを動かさない
+        if (isChestOpenedCompletely) return;
+
         if (isIncreasing)
             timingSlider.value += Time.deltaTime * speed;
         else
@@ -100,6 +105,7 @@ public class TimingGameController : MonoBehaviour
 
         if (timingSlider.value >= 1f) isIncreasing = false;
         if (timingSlider.value <= 0f) isIncreasing = true;
+
 
         // デバッグ用にFキーで強制ジャスト成功を呼ぶ例
         if (Input.GetKeyDown(KeyCode.F))
@@ -144,10 +150,16 @@ public class TimingGameController : MonoBehaviour
             if (successCount >= successToReward)
             {
                 GiveReward();
+                
+                // ここで宝箱を完全オープン状態に固定
+                isChestOpenedCompletely = true;
+                chestImage.sprite = chestOpenedSprite;
+
+                // スライダーを非表示または無効化
+                timingSlider.interactable = false;
+
                 successCount = 0;
 
-                // 報酬取得後は閉じた状態に戻す
-                UpdateChestImage();
             }
         }
         else
@@ -169,6 +181,7 @@ public class TimingGameController : MonoBehaviour
                 UpdateChestImage();
             }
         }
+
     }
 
     private void UpdateChestImage()
@@ -390,6 +403,7 @@ public class TimingGameController : MonoBehaviour
         // パネルをオフにする
         if (timingGamePanel != null)
             timingGamePanel.SetActive(false);
+
     }
 
 

@@ -42,7 +42,7 @@ public class InventoryManager : MonoBehaviour
         return new Dictionary<string, int>(itemCounts);
     }
 
-    //  合計金額を計算
+    // 合計金額を計算
     public int CalculateTotalValue(List<Item> itemDatabase)
     {
         int total = 0;
@@ -54,11 +54,42 @@ public class InventoryManager : MonoBehaviour
         }
         return total;
     }
-
-    //  プレイヤーのデータに保存
-    public void SaveTotalValueToPlayer(PlayerData playerData, List<Item> itemDatabase)
+    public void SaveTotalValue(List<Item> itemDatabase)
     {
-        playerData.totalValue = CalculateTotalValue(itemDatabase);
-        Debug.Log($"プレイヤーデータに合計金額を保存: {playerData.totalValue}");
+        int total = CalculateTotalValue(itemDatabase);
+
+        // 合計金額を保存
+        PlayerPrefs.SetInt("TotalValue", total);
+
+        // ハイスコアを更新
+        int currentHigh = PlayerPrefs.GetInt("HighScore", 0);
+        if (total > currentHigh)
+        {
+            PlayerPrefs.SetInt("HighScore", total);
+        }
+
+        // セーブ反映
+        PlayerPrefs.Save();
+
+        Debug.Log($"[SAVE] PlayerPrefsに合計金額を保存: {total}");
     }
+    public Dictionary<Item.Rarity, int> GetItemCountByRarity(List<Item> itemDatabase)
+    {
+        Dictionary<Item.Rarity, int> rarityCounts = new Dictionary<Item.Rarity, int>();
+
+        foreach (var pair in itemCounts)
+        {
+            Item item = itemDatabase.Find(i => i.itemId == pair.Key);
+            if (item != null)
+            {
+                if (!rarityCounts.ContainsKey(item.rarity))
+                    rarityCounts[item.rarity] = 0;
+
+                rarityCounts[item.rarity] += pair.Value;
+            }
+        }
+
+        return rarityCounts;
+    }
+
 }
