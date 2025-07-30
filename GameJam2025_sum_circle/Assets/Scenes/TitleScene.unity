@@ -815,7 +815,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: GameScene
+          m_StringArgument: NPC&TreasureScene
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1802366548
@@ -919,6 +919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1809c4c37b60a1347b43196fb1de459a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDatabase: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
