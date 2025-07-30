@@ -4,6 +4,7 @@
 */
 using UnityEngine;
 using Global;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ResultGame()
     {
-        //TODO
+        SceneManager.LoadScene("ResultScene"); //リザルトシーンへ.
     }
 
     /// <summary>
