@@ -38,7 +38,8 @@ public class PlayerManager : MyObject
     [SerializeField]              float moveSpeed;    //移動速度.
     [SerializeField, Range(0, 1)] float reduceInputY; //Y入力をどれだけ減らすか.
     [Space]
-    [SerializeField] Vector2[] roomPos = new Vector2[(int)RoomNum.RoomCount];
+    [SerializeField] Vector2[] exitPos = new Vector2[(int)RoomExit.Count];
+    [SerializeField] Vector2[] roomPos = new Vector2[(int)RoomNum.Count];
 
     Animator anmSerif1;
     Animator anmSerif2;
@@ -57,15 +58,8 @@ public class PlayerManager : MyObject
         anmSerif1 = pnlSerif1.GetComponent<Animator>();
         anmSerif2 = pnlSerif2.GetComponent<Animator>();
 
-        //test.
-        SaveSerif("A: 東に行くと何かがあるよ");
-        SaveSerif("B: そこには何もないよ");
-        SaveSerif("C: 嘘だったよ");
-        SaveSerif("D: ふざけんなよ");
-        SaveSerif("A: はああああああああ");
-        SaveSerif("B: ああああああああ");
-        SaveSerif("C: いいいいいいいいい");
-        SaveSerif("D: うああああああああああああああああ");
+        //プレイヤー初期状態.
+        SetAnimMyObj("Back");   //後ろ向きから開始.
         nowRoom = RoomNum.C_01; //最初は廊下01.
     }
     void Update()
@@ -140,47 +134,38 @@ public class PlayerManager : MyObject
     /// </summary>
     private void CameraMove()
     {
+        //カメラ座標.
+        float cameraZ = Camera.main.transform.position.z;
+
         //部屋別に制御.
         switch (nowRoom)
         {
         //▼範囲内を動く.
             case RoomNum.C_01:
-                {
-                    //カメラ座標.
-                    Vector3 cameraPos = Camera.main.transform.position;
-                    //プレイヤーの座標にカメラを追尾.
-                    Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraPos.z);
-                }
-                //TODO: 範囲内を動く.
-                break;
             case RoomNum.C_02:
-                //TODO: 範囲内を動く.
-                break;
             case RoomNum.R_Treasure:
-                //TODO: 範囲内を動く.
-                break;
+            {
+                //プレイヤーの座標にカメラを追尾.
+                Camera.main.transform.position = new Vector3(Pos.x, Pos.y, cameraZ);
+            }
+            break;
 
         //▼1画面固定.
             case RoomNum.R_01:
-                break;
             case RoomNum.R_02:
-                break;
             case RoomNum.R_03:
-                break;
             case RoomNum.R_04:
-                break;
             case RoomNum.R_05:
-                break;
             case RoomNum.R_06:
-                break;
             case RoomNum.R_07:
-                break;
             case RoomNum.R_08:
-                break;
             case RoomNum.R_09:
-                break;
             case RoomNum.R_10:
-                break;
+            {
+                //部屋の位置.
+                Camera.main.transform.position = new Vector3(roomPos[(int)nowRoom].x, roomPos[(int)nowRoom].y, cameraZ);
+            }
+            break;
 
             default: Debug.LogError("[Error] 不正な値です"); break;
         }
@@ -265,88 +250,141 @@ public class PlayerManager : MyObject
     /// <summary>
     /// 何かに当たり始めた瞬間の処理.
     /// </summary>
-    private void OnCollisionEnter2D(Collision2D hit)
+    private void OnTriggerEnter2D(Collider2D hit)
     {
-        //tag別で処理.
-        switch (hit.gameObject.tag) 
+        //name別で処理.
+        switch (hit.gameObject.name) 
         {
-            case "Goto_C_01":
-                //TODO: 移動先はどこか？ 
+        //▼各部屋から出る.
+            case "Exit-R01":
+                Pos = exitPos[(int)RoomExit.C01_1]; //移動.
+                nowRoom = RoomNum.C_01;
+                MoveRoom();
+                break;
+            case "Exit-R02":
+                Pos = exitPos[(int)RoomExit.C01_2]; //移動.
+                nowRoom = RoomNum.C_01;
+                MoveRoom();
+                break;
+            case "Exit-R03":
+                Pos = exitPos[(int)RoomExit.C01_3]; //移動.
+                nowRoom = RoomNum.C_01;
+                MoveRoom();
+                break;
+            case "Exit-R04":
+                Pos = exitPos[(int)RoomExit.C01_4]; //移動.
+                nowRoom = RoomNum.C_01;
+                MoveRoom();
+                break;
+            case "Exit-R05":
+                Pos = exitPos[(int)RoomExit.C01_5]; //移動.
                 nowRoom = RoomNum.C_01;
                 MoveRoom();
                 break;
 
-            case "Goto_C_02": 
-                //TODO: 移動先はどこか？ 
+            case "Exit-R06":
+                Pos = exitPos[(int)RoomExit.C02_1]; //移動.
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
+            case "Exit-R07":
+                Pos = exitPos[(int)RoomExit.C02_2]; //移動.
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
+            case "Exit-R08":
+                Pos = exitPos[(int)RoomExit.C02_3]; //移動.
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
+            case "Exit-R09":
+                Pos = exitPos[(int)RoomExit.C02_4]; //移動.
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
+            case "Exit-R10":
+                Pos = exitPos[(int)RoomExit.C02_5]; //移動.
                 nowRoom = RoomNum.C_02;
                 MoveRoom();
                 break;
 
-            case "Goto_R_01":
-                //TODO: 移動先はどこか？ 
+        //▼廊下1から出る.
+            case "Exit-C01-1":
+                Pos = exitPos[(int)RoomExit.R_01]; //移動.
                 nowRoom = RoomNum.R_01;
                 MoveRoom();
                 break;
-
-            case "Goto_R_02":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C01-2":
+                Pos = exitPos[(int)RoomExit.R_02]; //移動.
                 nowRoom = RoomNum.R_02;
                 MoveRoom();
                 break;
-
-            case "Goto_R_03":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C01-3":
+                Pos = exitPos[(int)RoomExit.R_03]; //移動.
                 nowRoom = RoomNum.R_03;
                 MoveRoom();
                 break;
-
-            case "Goto_R_04":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C01-4":
+                Pos = exitPos[(int)RoomExit.R_04]; //移動.
                 nowRoom = RoomNum.R_04;
                 MoveRoom();
                 break;
-
-            case "Goto_R_05":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C01-5":
+                Pos = exitPos[(int)RoomExit.R_05]; //移動.
                 nowRoom = RoomNum.R_05;
                 MoveRoom();
                 break;
+            case "Exit-C01-6":
+                Pos = exitPos[(int)RoomExit.C02_7]; //移動.
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
 
-            case "Goto_R_06":
-                //TODO: 移動先はどこか？ 
+        //▼廊下2から出る.
+            case "Exit-C02-1":
+                Pos = exitPos[(int)RoomExit.R_06]; //移動.
                 nowRoom = RoomNum.R_06;
                 MoveRoom();
                 break;
-
-            case "Goto_R_07":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C02-2":
+                Pos = exitPos[(int)RoomExit.R_07]; //移動.
                 nowRoom = RoomNum.R_07;
                 MoveRoom();
                 break;
-
-            case "Goto_R_08":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C02-3":
+                Pos = exitPos[(int)RoomExit.R_08]; //移動.
                 nowRoom = RoomNum.R_08;
                 MoveRoom();
                 break;
-
-            case "Goto_R_09":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C02-4":
+                Pos = exitPos[(int)RoomExit.R_09]; //移動.
                 nowRoom = RoomNum.R_09;
                 MoveRoom();
                 break;
-
-            case "Goto_R_10":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C02-5":
+                Pos = exitPos[(int)RoomExit.R_10]; //移動.
                 nowRoom = RoomNum.R_10;
                 MoveRoom();
                 break;
-
-            case "Goto_R_Treasure":
-                //TODO: 移動先はどこか？ 
+            case "Exit-C02-6":
+                Pos = exitPos[(int)RoomExit.R_Treasure]; //移動.
                 nowRoom = RoomNum.R_Treasure;
                 MoveRoom();
                 break;
+            case "Exit-C02-7":
+                Pos = exitPos[(int)RoomExit.C01_6]; //移動.
+                nowRoom = RoomNum.C_01;
+                MoveRoom();
+                break;
+
+        //▼宝箱部屋から出る.
+            case "Exit-Treasure":
+                Pos = exitPos[(int)RoomExit.C02_6]; //移動.
+                nowRoom = RoomNum.C_02;
+                MoveRoom();
+                break;
         }
+
+        Debug.Log("行き先: " + nowRoom);
     }
 }
