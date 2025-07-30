@@ -52,15 +52,4 @@ namespace Utility
         }
     }
 
-    [System.Serializable]
-    public class SerifData
-    {
-        public string npcId;
-        public string npcName;
-        public string message;
-        public int dayCnt;
-
-    }
-
-
 }

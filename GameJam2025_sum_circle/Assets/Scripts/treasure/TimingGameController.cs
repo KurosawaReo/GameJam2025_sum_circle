@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Utility;
+using System.Collections;
 
 public class TimingGameController : MonoBehaviour
 {
@@ -29,6 +30,20 @@ public class TimingGameController : MonoBehaviour
 
     [Header("レジェンダリー専用報酬リスト")]
     public List<Item> legendaryRewards;  // ここにレジェンダリーだけ入れる（未使用だが保持可能）
+
+    [Header("報酬アイコン表示")]
+    [SerializeField] private Transform rewardIconParent;   // アイコンを表示するUIの親
+    [SerializeField] private GameObject rewardIconPrefab;  // アイコンのPrefab
+
+    [Header("結果エフェクト")]
+    [SerializeField] private GameObject successEffectPrefab;
+    [SerializeField] private GameObject failEffectPrefab;
+    [SerializeField] private GameObject AllfailEffectPrefab;
+    [SerializeField] private GameObject justSuccessEffectPrefab;
+    [SerializeField] public GameObject SpecialRewardEffectPrefab;
+    [SerializeField] public GameObject JustBonusEffectPrefab;
+    [SerializeField] public Transform resultEffectParent;
+
 
     private List<Image> hearts = new List<Image>();
     private List<Sprite> originalHeartSprites = new List<Sprite>();
@@ -103,12 +118,14 @@ public class TimingGameController : MonoBehaviour
                 Debug.Log("ジャスト成功！");
                 justSuccessCount++;  // ← ここでジャスト成功回数をカウント
                 speed += speedIncrease * 2f;
+                PlayResultEffect(justSuccessEffectPrefab);
             }
             else
             {
                 Debug.Log("成功！");
                 normalSuccessCount++;  // ← ここで通常成功回数をカウント
                 speed += speedIncrease;
+                PlayResultEffect(successEffectPrefab);
             }
 
             failCount = 0;
@@ -127,10 +144,12 @@ public class TimingGameController : MonoBehaviour
             Debug.Log("失敗！");
             failCount++;
             UpdateHearts();
+            PlayResultEffect(failEffectPrefab);
 
             if (failCount >= maxFailCount)
             {
                 Debug.Log("宝箱が壊れた！");
+                PlayResultEffect(AllfailEffectPrefab);
                 if (timingGamePanel != null)
                     timingGamePanel.SetActive(false);
                 successCount = 0;
@@ -225,6 +244,7 @@ public class TimingGameController : MonoBehaviour
             {
                 InventoryManager.Instance.AddItem(specialItem, 1);
                 Debug.Log($"ジャスト3回達成！特別アイテム「{specialItem.itemName}」を獲得！");
+                ShowRewardIcon(specialItem);
                 PlaySpecialRewardEffect();
             }
             else
@@ -251,6 +271,8 @@ public class TimingGameController : MonoBehaviour
             int index = Random.Range(0, nonLegendaryItems.Count);
             Item reward = nonLegendaryItems[index];
             InventoryManager.Instance.AddItem(reward, 1);
+            ShowRewardIcon(reward);
+
             Debug.Log($"報酬アイテム「{reward.itemName}」を獲得！（レアリティ：{currentChestRarity}）");
 
             // ジャスト2回以上3未満なら30%の確率で追加報酬と演出
@@ -262,8 +284,10 @@ public class TimingGameController : MonoBehaviour
                     int bonusIndex = Random.Range(0, nonLegendaryItems.Count);
                     Item bonusReward = nonLegendaryItems[bonusIndex];
                     InventoryManager.Instance.AddItem(bonusReward, 1);
+                    ShowRewardIcon(bonusReward);
                     Debug.Log($"ジャストボーナス！追加報酬「{bonusReward.itemName}」を獲得！");
                     PlayJustBonusEffect();
+
                 }
             }
         }
@@ -273,16 +297,52 @@ public class TimingGameController : MonoBehaviour
         normalSuccessCount = 0;
     }
 
+    private void ShowRewardIcon(Item item)
+    {
+        if (item == null || rewardIconPrefab == null || rewardIconParent == null) return;
+
+        // アイコンを生成
+        GameObject iconObj = Instantiate(rewardIconPrefab, rewardIconParent);
+        Image iconImage = iconObj.GetComponent<Image>();
+        if (iconImage != null)
+        {
+            iconImage.sprite = item.icon;
+        }
+
+        // 2秒後に自動削除
+        Destroy(iconObj, 2f);
+    }
+    private void PlayResultEffect(GameObject effectPrefab)
+    {
+        if (effectPrefab == null || resultEffectParent == null) return;
+
+        GameObject effect = Instantiate(effectPrefab, resultEffectParent);
+        Destroy(effect, 1.5f);  // 1.5秒後に自動削除
+    }
+
+
     private void PlayJustBonusEffect()
     {
         Debug.Log("ジャストボーナス演出再生！");
-        // TODO: パーティクルやSEなどの演出をここに実装
+        PlayResultEffect(JustBonusEffectPrefab);
+
+        //SE
     }
 
     private void PlaySpecialRewardEffect()
     {
         Debug.Log("特別報酬演出再生！");
-        // TODO: 特別なアニメやSEなどをここに実装
+        PlayResultEffect(SpecialRewardEffectPrefab);
+
+        //SE
+    }
+
+    private void ClearPreviousResultEffects()
+    {
+        foreach (Transform child in resultEffectParent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private Item GetSpecialJustReward()
@@ -310,6 +370,7 @@ public class TimingGameController : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     public void ForceJustSuccess()
     {
         Debug.Log("【デバッグ】強制ジャスト成功！");
@@ -346,5 +407,5 @@ public class TimingGameController : MonoBehaviour
             successCount = 0;
         }
     }
-
+#endif
 }

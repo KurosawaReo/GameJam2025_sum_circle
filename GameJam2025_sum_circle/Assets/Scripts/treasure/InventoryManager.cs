@@ -30,7 +30,6 @@ public class InventoryManager : MonoBehaviour
             itemCounts[item.itemId] = count;
 
         Debug.Log($"アイテム「{item.itemName}」を{count}個追加しました。合計：{itemCounts[item.itemId]}");
-        // UI更新など通知処理もここに入れる
     }
 
     public int GetItemCount(string itemId)
@@ -43,6 +42,23 @@ public class InventoryManager : MonoBehaviour
         return new Dictionary<string, int>(itemCounts);
     }
 
+    //  合計金額を計算
+    public int CalculateTotalValue(List<Item> itemDatabase)
+    {
+        int total = 0;
+        foreach (var pair in itemCounts)
+        {
+            Item item = itemDatabase.Find(i => i.itemId == pair.Key);
+            if (item != null)
+                total += item.price * pair.Value;
+        }
+        return total;
+    }
 
-    // 他、アイテム削除や所持チェックも追加可能
+    //  プレイヤーのデータに保存
+    public void SaveTotalValueToPlayer(PlayerData playerData, List<Item> itemDatabase)
+    {
+        playerData.totalValue = CalculateTotalValue(itemDatabase);
+        Debug.Log($"プレイヤーデータに合計金額を保存: {playerData.totalValue}");
+    }
 }
