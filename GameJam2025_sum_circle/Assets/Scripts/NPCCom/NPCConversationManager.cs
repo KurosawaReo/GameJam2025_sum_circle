@@ -353,7 +353,7 @@ public class NPCConversationManager : MonoBehaviour
         Debug.Log("[夜イベントへ切り替え] SendNightTrigger() が呼び出されました");
     }
 
-    // ✅ 好感度データの保存
+    // 好感度データの保存
     public void SaveAffection()
     {
         foreach (var kvp in npcAffection)
