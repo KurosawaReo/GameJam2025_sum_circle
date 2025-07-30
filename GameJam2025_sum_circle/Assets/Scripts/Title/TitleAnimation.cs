@@ -5,70 +5,40 @@ using System.Collections;
 public class TitleAnimation : MonoBehaviour
 {
     public RectTransform titleTransform;
-    public float fadeDuration = 1.5f;
-    public float scaleDuration = 1.5f;
-    public float waitTime = 1f; // アニメーション後の待機時間
+    public float minScale = 0.8f;  // 最小サイズ
+    public float maxScale = 1.2f;  // 最大サイズ
+    public float scaleSpeed = 1.5f; // 拡大縮小のスピード
 
-    private CanvasGroup canvasGroup;
+    private bool scalingUp = true;
 
-    private void Awake()
+    private void Update()
     {
-        canvasGroup = titleTransform.gameObject.AddComponent<CanvasGroup>();
-        ResetTitleState();
-    }
+        if (titleTransform == null) return;
 
-    private void Start()
-    {
-        StartCoroutine(LoopTitleAnimation());
-    }
+        // 現在のスケールを取得
+        Vector3 currentScale = titleTransform.localScale;
 
-    private IEnumerator LoopTitleAnimation()
-    {
-        while (true)
+        // 拡大・縮小処理
+        if (scalingUp)
         {
-            yield return StartCoroutine(PlayTitleAnimation()); // フェードイン・拡大
-            yield return new WaitForSeconds(waitTime);
-
-            yield return StartCoroutine(FadeOutAnimation()); // フェードアウト
-            yield return new WaitForSeconds(waitTime);
-
-            ResetTitleState(); // 初期状態に戻す
+            currentScale += Vector3.one * scaleSpeed * Time.deltaTime;
+            if (currentScale.x >= maxScale)
+            {
+                currentScale = Vector3.one * maxScale;
+                scalingUp = false;
+            }
         }
-    }
-
-    private IEnumerator PlayTitleAnimation()
-    {
-        float time = 0f;
-
-        while (time < fadeDuration)
+        else
         {
-            time += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(0f, 1f, time / fadeDuration);
-            titleTransform.localScale = Vector3.Lerp(Vector3.one * 0.5f, Vector3.one, time / scaleDuration);
-            yield return null;
+            currentScale -= Vector3.one * scaleSpeed * Time.deltaTime;
+            if (currentScale.x <= minScale)
+            {
+                currentScale = Vector3.one * minScale;
+                scalingUp = true;
+            }
         }
 
-        canvasGroup.alpha = 1f;
-        titleTransform.localScale = Vector3.one;
-    }
-
-    private IEnumerator FadeOutAnimation()
-    {
-        float time = 0f;
-
-        while (time < fadeDuration)
-        {
-            time += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(1f, 0f, time / fadeDuration);
-            yield return null;
-        }
-
-        canvasGroup.alpha = 0f;
-    }
-
-    private void ResetTitleState()
-    {
-        canvasGroup.alpha = 0f;
-        titleTransform.localScale = Vector3.one * 0.5f;
+        // スケールを適用
+        titleTransform.localScale = currentScale;
     }
 }
