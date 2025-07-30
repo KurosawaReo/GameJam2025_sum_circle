@@ -69,7 +69,10 @@ public class PlayerManager : MyObject
     {
         PlayerMove(); //プレイヤー移動.
         CameraMove(); //カメラ移動.
-        ShowSerif();  //セリフメモを表示.
+    }
+    void Update()
+    {
+        ShowSerif(); //セリフメモを表示.
     }
 
     /// <summary>

@@ -47,20 +47,16 @@ public class Police : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D c)
     {
-        Debug.Log("なんか当たったー");
         if (c != null && c.CompareTag("Player"))
         {
-            Debug.Log("TagPlayer");
             Vector2 posDelta = c.transform.position - transform.position;
             float target_angle = Vector2.Angle(transform.up, posDelta);
 
+            //視野内であれば.
             if (target_angle < angle)
             {
-                Debug.Log("視野内にプレイヤーを発見！"); 
-            }
-            else
-            {
-                Debug.Log("死角にいます ");
+                var scptPlyMng = GameObject.Find("Player").GetComponent<PlayerManager>();
+                scptPlyMng.Found(); //プレイヤー発見.
             }
         }
     }
