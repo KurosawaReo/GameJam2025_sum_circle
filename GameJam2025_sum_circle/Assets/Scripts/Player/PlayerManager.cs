@@ -104,8 +104,8 @@ public class PlayerManager : MyObject
             if (Mathf.Abs(vec.x) >= Mathf.Abs(vec.y))
             {
                 ResetAnim();
-                SetAnimMyObj("Side");
-                objPlyImg.GetComponent<SpriteRenderer>().flipX = (vec.x < 0); //画像反転.
+                SetAnimMyObj((scptGameMng.Phase == Phase.Day) ? "Side" : "Side_Night"); //昼夜で切り替え.
+                objPlyImg.GetComponent<SpriteRenderer>().flipX = (vec.x < 0);           //画像反転.
             }
             //縦に移動してるなら.
             else
@@ -114,12 +114,12 @@ public class PlayerManager : MyObject
                 if (vec.y >= 0)
                 {
                     ResetAnim();
-                    SetAnimMyObj("Back");
+                    SetAnimMyObj("Back"); //背面は共通.
                 }
                 else
                 {
                     ResetAnim();
-                    SetAnimMyObj("Front");
+                    SetAnimMyObj((scptGameMng.Phase == Phase.Day) ? "Front" : "Front_Night"); //昼夜で切り替え.
                 }
             }
 

@@ -16,7 +16,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] Phase phase;       //フェーズ.
 
     //get, set.
-    public int DayCnt { get; }
+    public int   DayCnt { get => dayCnt; }
+    public Phase Phase  { get => phase; }
+
+    public void Start()
+    {
+        phase = Phase.Night; //テスト.のため夜に
+    }
 
     /// <summary>
     /// ゲームリセット処理.
