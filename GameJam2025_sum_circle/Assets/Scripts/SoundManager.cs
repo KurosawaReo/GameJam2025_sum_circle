@@ -127,6 +127,7 @@ public class SoundManager : MonoBehaviour
             yield return null;
         }
 
+
         bgmSource.Stop();
         bgmSource.clip = newClip;
         bgmSource.loop = true; 

@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: walk_back
+  m_Name: walk_side_night
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -73,13 +73,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: 69351819dfd5cc241a406d32e527ef45, type: 3}
+      value: {fileID: 21300000, guid: 7e54ef4f8dfca3a4cad3afb98737627a, type: 3}
     - time: 0.16666667
-      value: {fileID: 21300000, guid: 93224e51eedf9c6418389b638d4baa21, type: 3}
+      value: {fileID: 21300000, guid: 1d2f396892182bb43b75cdc822ccf86a, type: 3}
     - time: 0.33333334
-      value: {fileID: 21300000, guid: 222914b0121361b40bea9fa2839512fe, type: 3}
+      value: {fileID: 21300000, guid: b87d0876c7a8f59408a7695b4ee0c73d, type: 3}
     - time: 0.5
-      value: {fileID: 21300000, guid: 93224e51eedf9c6418389b638d4baa21, type: 3}
+      value: {fileID: 21300000, guid: 1d2f396892182bb43b75cdc822ccf86a, type: 3}
     attribute: m_Sprite
     path: PlayerImage
     classID: 212
@@ -111,10 +111,10 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 69351819dfd5cc241a406d32e527ef45, type: 3}
-    - {fileID: 21300000, guid: 93224e51eedf9c6418389b638d4baa21, type: 3}
-    - {fileID: 21300000, guid: 222914b0121361b40bea9fa2839512fe, type: 3}
-    - {fileID: 21300000, guid: 93224e51eedf9c6418389b638d4baa21, type: 3}
+    - {fileID: 21300000, guid: 7e54ef4f8dfca3a4cad3afb98737627a, type: 3}
+    - {fileID: 21300000, guid: 1d2f396892182bb43b75cdc822ccf86a, type: 3}
+    - {fileID: 21300000, guid: b87d0876c7a8f59408a7695b4ee0c73d, type: 3}
+    - {fileID: 21300000, guid: 1d2f396892182bb43b75cdc822ccf86a, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
