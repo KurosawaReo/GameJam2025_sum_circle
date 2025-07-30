@@ -44,6 +44,11 @@ public class TimingGameController : MonoBehaviour
     [SerializeField] public GameObject JustBonusEffectPrefab;
     [SerializeField] public Transform resultEffectParent;
 
+    [Header("宝箱画像関連")]
+    [SerializeField] private Image chestImage;
+    [SerializeField] private Sprite chestClosedSprite;      // 閉じている
+    [SerializeField] private Sprite chestOpeningSprite;     // 開きかけ
+    [SerializeField] private Sprite chestOpenedSprite;      // 開いた
 
     private List<Image> hearts = new List<Image>();
     private List<Sprite> originalHeartSprites = new List<Sprite>();
@@ -116,14 +121,14 @@ public class TimingGameController : MonoBehaviour
             if (value >= justMin && value <= justMax)
             {
                 Debug.Log("ジャスト成功！");
-                justSuccessCount++;  // ← ここでジャスト成功回数をカウント
+                justSuccessCount++;
                 speed += speedIncrease * 2f;
                 PlayResultEffect(justSuccessEffectPrefab);
             }
             else
             {
                 Debug.Log("成功！");
-                normalSuccessCount++;  // ← ここで通常成功回数をカウント
+                normalSuccessCount++;
                 speed += speedIncrease;
                 PlayResultEffect(successEffectPrefab);
             }
@@ -133,10 +138,16 @@ public class TimingGameController : MonoBehaviour
             ResetHearts();
             GenerateSuccessZone();
 
+            // 宝箱画像更新
+            UpdateChestImage();
+
             if (successCount >= successToReward)
             {
                 GiveReward();
                 successCount = 0;
+
+                // 報酬取得後は閉じた状態に戻す
+                UpdateChestImage();
             }
         }
         else
@@ -150,10 +161,32 @@ public class TimingGameController : MonoBehaviour
             {
                 Debug.Log("宝箱が壊れた！");
                 PlayResultEffect(AllfailEffectPrefab);
+
                 if (timingGamePanel != null)
                     timingGamePanel.SetActive(false);
+
                 successCount = 0;
+                UpdateChestImage();
             }
+        }
+    }
+
+    private void UpdateChestImage()
+    {
+        if (chestImage == null) return;
+
+        // successToReward = 3 回の成功で完全オープン
+        if (successCount == 0)
+        {
+            chestImage.sprite = chestClosedSprite;
+        }
+        else if (successCount < successToReward)
+        {
+            chestImage.sprite = chestOpeningSprite;
+        }
+        else if (successCount >= successToReward)
+        {
+            chestImage.sprite = chestOpenedSprite;
         }
     }
 
@@ -291,7 +324,7 @@ public class TimingGameController : MonoBehaviour
                 }
             }
         }
-
+        
         speed = initialSpeed;
         justSuccessCount = 0;
         normalSuccessCount = 0;
@@ -301,24 +334,79 @@ public class TimingGameController : MonoBehaviour
     {
         if (item == null || rewardIconPrefab == null || rewardIconParent == null) return;
 
-        // アイコンを生成
+        // 既存のアイコンを削除
+        foreach (Transform child in rewardIconParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 新しいアイコンを生成
         GameObject iconObj = Instantiate(rewardIconPrefab, rewardIconParent);
         Image iconImage = iconObj.GetComponent<Image>();
+
         if (iconImage != null)
         {
             iconImage.sprite = item.icon;
         }
 
-        // 2秒後に自動削除
-        Destroy(iconObj, 2f);
+        // CanvasGroupがなければ追加
+        CanvasGroup cg = iconObj.GetComponent<CanvasGroup>();
+        if (cg == null) cg = iconObj.AddComponent<CanvasGroup>();
+        cg.alpha = 0f;
+
+        // フェードアニメーション開始
+        StartCoroutine(AnimateRewardIcon(iconObj, cg));
     }
+
+    private IEnumerator AnimateRewardIcon(GameObject iconObj, CanvasGroup cg)
+    {
+        float fadeInTime = 0.5f;
+        float waitTime = 1.5f;
+        float fadeOutTime = 0.5f;
+
+        // フェードイン
+        float t = 0f;
+        while (t < fadeInTime)
+        {
+            t += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(0f, 1f, t / fadeInTime);
+            yield return null;
+        }
+
+        // 少し待機
+        yield return new WaitForSeconds(waitTime);
+
+        // フェードアウト
+        t = 0f;
+        while (t < fadeOutTime)
+        {
+            t += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(1f, 0f, t / fadeOutTime);
+            yield return null;
+        }
+
+        Destroy(iconObj);
+
+        // パネルをオフにする
+        if (timingGamePanel != null)
+            timingGamePanel.SetActive(false);
+    }
+
+
     private void PlayResultEffect(GameObject effectPrefab)
     {
         if (effectPrefab == null || resultEffectParent == null) return;
 
+        // 既存エフェクトを削除してから新しいエフェクトを表示
+        foreach (Transform child in resultEffectParent)
+        {
+            Destroy(child.gameObject);
+        }
+
         GameObject effect = Instantiate(effectPrefab, resultEffectParent);
         Destroy(effect, 1.5f);  // 1.5秒後に自動削除
     }
+
 
 
     private void PlayJustBonusEffect()
@@ -335,14 +423,6 @@ public class TimingGameController : MonoBehaviour
         PlayResultEffect(SpecialRewardEffectPrefab);
 
         //SE
-    }
-
-    private void ClearPreviousResultEffects()
-    {
-        foreach (Transform child in resultEffectParent)
-        {
-            Destroy(child.gameObject);
-        }
     }
 
     private Item GetSpecialJustReward()

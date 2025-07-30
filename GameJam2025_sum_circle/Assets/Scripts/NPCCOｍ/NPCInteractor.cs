@@ -27,7 +27,7 @@ public class NPCDialogueData
     [Header("好感度を上げる選択肢（このNPC専用）")]
     public List<AffectionOption> affectionOptions = new List<AffectionOption>();
 
-    // ✅ 追加データ（他のスクリプトへ送る用の情報）
+    // 追加データ（他のスクリプトへ送る用の情報）
     [Header("他スクリプトに送る追加データ")]
     public string externalDataKey;    // 例: 送信IDやクエストキー
     [TextArea(2, 5)]
@@ -69,13 +69,23 @@ public class NPCInteractor : MonoBehaviour
                     dialogueData
                 );
 
-                // ✅ 外部スクリプトに送る処理例
+                // 外部スクリプトに送る処理例
                 if (!string.IsNullOrEmpty(dialogueData.externalDataKey))
                 {
-                    Debug.Log($"外部データ送信: {dialogueData.externalDataKey} | {dialogueData.externalDataText}");
-                    // 他スクリプトの関数呼び出し例
-                    ExternalDataReceiver.ReceiveData(dialogueData.externalDataKey, dialogueData.externalDataText);
+                    // 好感度が50以上の場合のみ送信
+                    int affection = NPCConversationManager.Instance.GetAffection(npcId);
+
+                    if (affection >= 50)
+                    {
+                        Debug.Log($"外部データ送信: {dialogueData.externalDataKey} | {dialogueData.externalDataText}");
+                        ExternalDataReceiver.ReceiveData(dialogueData.externalDataKey, dialogueData.externalDataText);
+                    }
+                    else
+                    {
+                        Debug.Log($"[{npcId}] 好感度が50未満のためデータ送信しない（現在:{affection}）");
+                    }
                 }
+
             }
             else
             {
