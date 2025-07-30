@@ -101,11 +101,6 @@ public class NPCConversationManager : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            ResetAllAffection();
-
-        };
     }
 
     // 会話開始

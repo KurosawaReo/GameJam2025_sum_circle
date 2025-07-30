@@ -174,8 +174,8 @@ public class TimingGameController : MonoBehaviour
                 Debug.Log("宝箱が壊れた！");
                 PlayResultEffect(AllfailEffectPrefab);
 
-                if (timingGamePanel != null)
-                    timingGamePanel.SetActive(false);
+                //if (timingGamePanel != null)
+                //    timingGamePanel.SetActive(false);
 
                 successCount = 0;
                 UpdateChestImage();
