@@ -137,6 +137,9 @@ MonoBehaviour:
   objPlyImg: {fileID: 7256059422454299664}
   pnlSerif1: {fileID: 0}
   pnlSerif2: {fileID: 0}
+  layHitObj:
+    serializedVersion: 2
+    m_Bits: 8
   txtSerif: {fileID: 0}
   moveSpeed: 8
   reduceInputY: 0.75
@@ -164,19 +167,20 @@ MonoBehaviour:
   - {x: 82, y: 49.69}
   - {x: -22, y: 49.69}
   - {x: -52, y: 49.69}
-  - {x: -999, y: -999}
+  - {x: 0, y: 88.59}
   roomPos:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
+  - {x: 30, y: 0}
+  - {x: 60, y: 0}
+  - {x: 90, y: 0}
+  - {x: -30, y: 0}
+  - {x: -60, y: 0}
+  - {x: 30, y: 50}
+  - {x: 60, y: 50}
+  - {x: 90, y: 50}
+  - {x: -30, y: 50}
+  - {x: -60, y: 50}
   - {x: 0, y: 0}
 --- !u!61 &6165225787434516780
 BoxCollider2D:
@@ -207,10 +211,10 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -1.9}
+  m_Offset: {x: 0, y: -2.258548}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -221,7 +225,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8, y: 1.2}
+  m_Size: {x: 0.8, y: 0.64838755}
   m_EdgeRadius: 0
 --- !u!50 &3364460645066440581
 Rigidbody2D:
@@ -249,7 +253,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!1 &3144768831935536234
 GameObject:
   m_ObjectHideFlags: 0

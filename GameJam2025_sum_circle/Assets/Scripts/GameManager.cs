@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-        phase = Phase.Night; //テスト.のため夜に
+        phase = Phase.Night; //テストのため夜に
     }
 
     /// <summary>
