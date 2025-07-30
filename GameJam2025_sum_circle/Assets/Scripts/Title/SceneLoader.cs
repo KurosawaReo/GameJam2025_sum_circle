@@ -18,21 +18,31 @@ public class SceneLoader : MonoBehaviour
             return;
         }
 
-        //  リザルトシーンに移動する場合はスコアを保存
         if (sceneName == "ResultScene")
         {
             if (InventoryManager.Instance != null)
             {
-                // 合計金額を計算
                 int totalValue = InventoryManager.Instance.CalculateTotalValue(itemDatabase);
 
-                // PlayerPrefs に保存
+                // 宝の総数を計算
+                int treasureCount = 0;
+                foreach (var pair in InventoryManager.Instance.GetAllItems())
+                {
+                    treasureCount += pair.Value;
+                }
+
+                // PlayerPrefsに保存
                 PlayerPrefs.SetInt("TotalValue", totalValue);
 
-                // ランキングに保存
-                RankingManager.SaveScore(totalValue);
+                // 自分用の宝数キーに保存（ここを追加）
+                PlayerPrefs.SetInt("MyTreasureCount", treasureCount);
 
-                Debug.Log($"リザルトシーンに移動前に合計金額を保存: {totalValue}");
+                // ランキングに保存
+                RankingManager.SaveScore(totalValue, treasureCount);
+
+                PlayerPrefs.Save();
+
+                Debug.Log($"リザルト移動前: 金額={totalValue}, 宝数={treasureCount}");
             }
             else
             {
@@ -40,7 +50,6 @@ public class SceneLoader : MonoBehaviour
             }
         }
 
-        // シーン遷移
         SceneManager.LoadScene(sceneName);
     }
 }

@@ -84,11 +84,9 @@ public class InventoryManager : MonoBehaviour
             {
                 if (!rarityCounts.ContainsKey(item.rarity))
                     rarityCounts[item.rarity] = 0;
-
                 rarityCounts[item.rarity] += pair.Value;
             }
         }
-
         return rarityCounts;
     }
 
